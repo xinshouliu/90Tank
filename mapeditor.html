@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>90坦克-地图编辑器</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		ul{
+			overflow: hidden;
+			list-style: none;
+			margin: 20px;
+		}
+		ul li {
+			float: left;
+			margin: 5px;
+			width: 32px;
+			height: 32px;
+
+			background: url(images/block.bmp) 0 0 pink ;
+			
+		}
+		
+		ul li.hardwall{
+			background-position:  -32px 0;
+		}
+		ul li.river{
+			background-position: -96px 0;
+		}
+		ul li.green{
+			background-position: -64px 0;
+		}
+		ul li.home{
+			background-position: -160px 0;
+		}
+		ul li.eraser{
+			background:#000;
+		}
+		ul li.cur{
+			border: 1px solid black;
+		}
+		div.inner{
+			margin: 20px;
+			position: relative;
+			width: 514px;
+			height: 514px;
+			
+		}
+		/*div.main{
+			float: left;
+			width: 512px;
+			height: 512px;
+			
+		}
+		div.slide{
+			float: left;
+			width: 40px;
+			height: 512px;
+			background-color: #eee;
+		}*/
+		canvas{
+			position: absolute;
+			left:0;
+			top:0;
+			background-color: black;
+			border:1px solid gray;
+		}
+		.cursor{
+			position: absolute;
+			left:0;
+			top:0;
+			width: 30px;
+			height: 30px;
+			border: 1px solid red;
+		}
+		textarea{
+			position: absolute;
+			top: 40px;
+			width: 275px;
+			left: 600px;
+		}
+	</style>
+</head>
+<body>
+	<ul>
+		<li data-idx="1" class = "wall cur"></li>
+		<li data-idx="2" class = "hardwall"></li>
+		<li data-idx="4" class = "river"></li>
+		<li data-idx="3" class = "green"></li>
+		<li data-idx="5" class = "home"></li>
+		<li data-idx="6" class = "eraser"></li>
+	</ul>
+	<div class="inner">
+		<canvas id = "myconvas" width = "512" height="512"></canvas>
+		<p class = "cursor"></p>
+	</div>
+	<textarea name="" id="editor" cols="32" rows="32"></textarea>
+	
+	
+	<script src = js/jquery-1.12.3.min.js></script>
+	<script>
+		var myconvas = document.getElementById("myconvas");
+		var ctx = myconvas.getContext("2d");
+		//基地是32的.砖块是16的.
+		//地图做成是 32*32的
+		var type = "1";
+		var mapcode =(function(){
+			var temparr = [];
+			for(var i = 0 ; i < 32;i++){
+				var tempstr = "";
+				for(var j = 0; j<32;j++){
+					tempstr = tempstr.concat("0");
+				};
+				temparr.push(tempstr);
+			}
+			return temparr;
+		})();
+		console.log(mapcode);
+
+		$("ul li").click(function(){
+			type = $(this).attr("data-idx");
+			$(this).addClass("cur").siblings().removeClass("cur");
+		})
+		$(".inner").mousedown(function(event){
+			draw(event,type);
+		});
+		$(".inner").mousemove(function(event){
+			if(event.buttons!=0){
+				draw(event,type);
+			}
+		});
+		$("document").mouseup(function(event) {
+			$(".inner").mousedown = null;
+		});
+
+		// canvas上相对于坐标原地的位置
+		var bgimg = new Image();
+		bgimg.src = "images/tankAll.gif";
+		bgimg.onload = function(){
+		
+		}
+		function draw(event,type){
+			if(type < 5){
+				var x= parseInt((event.clientX - $(".inner").offset().left)/ 16);
+				var y= parseInt((event.clientY - $(".inner").offset().top)/ 16);
+				ctx.drawImage(bgimg, (type-1)*16, 96,16,16,x*16,y*16,16,16);
+				mapcode[y] =  mapcode[y].slice(0,x) + type + mapcode[y].slice(x+ 1);
+				$(".cursor").css({"width":16,"height":16,"top":y*16,"left":x*16});
+				$("#editor").val(JSON.stringify(mapcode));
+			}else{
+				var x= parseInt((event.clientX - $(".inner").offset().left)/ 32);
+				var y= parseInt((event.clientY - $(".inner").offset().top) / 32);
+				$(".cursor").css({"width":32,"height":32,"top":y*32,"left":x*32});
+				
+				
+				if(type == 5){
+					ctx.drawImage(bgimg, 256, 0,32,32,x*32,y*32,32,32);	
+					mapcode[y*2] =  mapcode[y*2].slice(0,x*2) + type+type + mapcode[y*2].slice(x*2+ 2);
+					mapcode[y*2+1] =  mapcode[y*2+1].slice(0,x*2) + type+type + mapcode[y*2+1].slice(x*2+ 2);
+					$("#editor").val(JSON.stringify(mapcode));
+					
+				}else if(type == 6){
+					ctx.clearRect(x*32, y*32, 32, 32);	
+					mapcode[y*2] =  mapcode[y*2].slice(0,x*2) + "0"+"0" + mapcode[y*2].slice(x*2+ 2);
+					mapcode[y*2+1] =  mapcode[y*2+1].slice(0,x*2) + "0"+"0" + mapcode[y*2+1].slice(x*2+ 2);
+					$("#editor").val(JSON.stringify(mapcode));
+				}
+			}
+		}
+	//横坐标是列,纵坐标是行
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>90坦克-1.0</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		ul li{
+			list-style: none;
+		}
+		div.inner{
+			width: 800px;
+			margin: 20px auto;
+			position: relative;
+
+		}
+		div.inner .main{
+			width: 512px;
+			height: 512px;
+			position: absolute;
+			left: 0;
+			top:0;
+			background-color: black;
+			border: 10px solid gray;
+		}
+		div.inner .main .page{
+			position: absolute;
+			left:0;
+			top:0;
+			width: 512px;
+			height: 512px;
+			background: url("images/menu.gif") no-repeat ;
+			/*background-clip: content-box;*/
+			display: none;
+			z-index: 4;
+		}
+		div.inner .main .win{
+			position: absolute;
+			left:0;
+			top:0;
+			width: 512px;
+			height: 512px;
+			background-color: black;
+			
+			/*background-clip: content-box;*/
+			display: none;
+			z-index: 5;
+		}
+		div.inner .main .win img{
+			display: block;
+			width: 350px;
+			height: 250px;
+			margin: 50px auto;
+		}
+		div.inner .main .win p{
+			margin-top: 20px;
+			color: #E05000;
+			display: none;
+			text-align: center;
+			font-size: 22px;
+			font-weight: bold;
+		}
+		div.inner .main .over{
+			position: absolute;
+			left:0;
+			top:0;
+			width: 512px;
+			height: 512px;
+			display: none;
+			z-index:4;
+		}
+		div.inner .main .over .gameover{
+			position: absolute;
+			bottom:0;
+			left:50%;
+			transform: translate(-75%);
+			width: 65px;
+			height: 30px;
+			background-color: pink;
+			background: url("images/tankAll.gif") -384px -64px no-repeat;
+		}
+		div.inner .main .page .selectplayers{
+			position: absolute;
+			top:250px;
+			left:130px;
+			width: 27px;
+			height: 27px;
+			background: url("images/tankAll.gif") -128px -96px;
+		}
+		div.inner .main .page .gamestart{
+			display: none;
+			position: absolute;
+			top:40%;
+			left:50%;
+			transform: translate(-50%);
+			font-size: 30px;
+			color: #E05000;
+			font-weight: bold;
+			font-family: consola;
+		}
+		div.inner .main .page .next{
+			display: none;
+			position: absolute;
+			top:40%;
+			left:50%;
+			transform: translate(-50%);
+			font-size: 30px;
+			color: #E05000;
+			font-weight: bold;
+			font-family: consola;
+		}
+		div.inner .main canvas{
+			position: absolute;
+			left:0;
+			top:0;
+		}
+		
+		div.inner .slide{
+			width: 200px;
+			height: 512px;
+			position: absolute;
+			left: 530px;
+			top:0;
+			background-color: gray;
+			border: 10px solid gray;
+			color: #03263a;
+			font-weight: bold;
+		}
+		div.inner .slide .tips{
+			margin-top: 150px;
+			color: white;
+			font-size: 20px;
+			font-family: consolas;
+		}
+		div.details{
+			width: 732px;
+			height: 70px;
+			position: absolute;
+			left: 0;
+			top:532px;
+			background-color: pink;
+			padding: 10px;
+			box-sizing: border-box;
+		}
+	</style>
+</head>
+<body>
+	<div class="inner">
+		<div class="main">
+			<div class="page">
+				<p class = "selectplayers"></p>
+				<p class="gamestart">start</p>
+				<p class="next">Congratulations!<br/>Next Stage</p>
+			</div>
+			<div class="win">
+				<img src="images/king.jpg" alt="">
+				<p class="slogen">Now win the game.<br/>Then go to the top of life</p>
+			</div>	
+			<canvas width = "512" height = "512" id="maincanvas">
+				
+			</canvas>
+			<canvas width = "512" height = "512" id="staticcanvas">
+				<!-- 草 -->
+			</canvas>
+			<div class="over">
+				<p class = "gameover"></p>				
+			</div>
+		</div>
+		<div class="slide">
+			<ul>
+				<li class = "f">Frames:</li>
+				<li class = "fps">FPS:</li>
+				<li class = "level">Stage:1</li>
+				<li class = "lives1"></li>
+				<li class = "lives2"></li>
+				<li class = "player1score"></li>
+				<li class = "player2score"></li>
+				<li class = "enemy"></li>
+			</ul>
+			<p class = "tips">
+			</p>
+		</div>
+	</div>
+	<script src = js/jquery-1.12.3.min.js></script>
+	<script src = js/SimpleJavaScriptInheritance.js></script>
+	<script src = js/underscore-min.js></script>
+	<script src = js/Game2.js></script>
+	<script src = js/Scene2.js></script>
+	<script src = js/Tank2.js></script>
+	<script src = js/Player2.js></script>
+	<script src = js/Map2.js></script>
+	<script src = js/Bullet2.js></script>
+	<script src = js/enemyTank2.js></script>
+	<script src = js/Base2.js></script>
+	<script>
+		var interAudio = new Audio("audio/start.mp3");
+		var tankdestoryAudio  = new Audio("audio/tankCrack.mp3");
+		var wallcrashAudio = new Audio("audio/bulletCrack.mp3");
+		var tankcrashAudio = new Audio("audio/playerCrack.mp3");
+		var attackAudio = new Audio("audio/attack.mp3");
+		var newtankAudio = new Audio("audio/prop.mp3");
+		var first = true;
+		var game = new Game("maincanvas","staticcanvas");
+
+	</script>
+</body>
+</html>
